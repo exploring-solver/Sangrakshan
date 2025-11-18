@@ -1,14 +1,32 @@
+// General Dashboards
 import Dashboard from "layouts/dashboard";
 import Billing from "layouts/billing";
 import Profile from "layouts/profile";
+
+// Role-based Dashboards
+import AdminDashboard from "layouts/admin-dashboard";
+import CommanderDashboard from "layouts/commander-dashboard";
+import TraineeDashboard from "layouts/trainee-dashboard";
+import EvaluatorDashboard from "layouts/evaluator-dashboard";
+import MedicalDashboard from "layouts/medical-dashboard";
+import EquipmentDashboard from "layouts/equipment-dashboard";
+
+// Authentication
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import Unauthorized from "layouts/unauthorized";
+
+// Components
 import Icon from "@mui/material/Icon";
 import Signout from "components/Signout";
 import Evaluation from "components/Evaluation";
 import ChatBot from "components/ChatBot";
 import Arlearning from "components/Arlearning";
 import TrackingPosture from "components/TrackingPosture";
+
+// Protected Route
+import ProtectedRoute from "components/ProtectedRoute";
+import { ROLES } from "context/AuthContext";
 
 const questions = [
   'What is the appropriate initial action in response to a chemical gas leak?',
@@ -31,6 +49,63 @@ const options = [
 const correctAnswers = ['optionA', 'optionC', 'optionC', 'optionA', 'optionB', 'optionA'];
 
 const routes = [
+  // Role-specific Dashboard Routes (not shown in sidebar - accessed via redirect)
+  {
+    route: "/admin/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.ADMIN]}>
+        <AdminDashboard />
+      </ProtectedRoute>
+    ),
+    key: "admin-dashboard",
+  },
+  {
+    route: "/commander/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.COMMANDER]}>
+        <CommanderDashboard />
+      </ProtectedRoute>
+    ),
+    key: "commander-dashboard",
+  },
+  {
+    route: "/trainee/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.TRAINEE]}>
+        <TraineeDashboard />
+      </ProtectedRoute>
+    ),
+    key: "trainee-dashboard",
+  },
+  {
+    route: "/evaluator/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.EVALUATOR]}>
+        <EvaluatorDashboard />
+      </ProtectedRoute>
+    ),
+    key: "evaluator-dashboard",
+  },
+  {
+    route: "/medical/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.MEDICAL_OFFICER]}>
+        <MedicalDashboard />
+      </ProtectedRoute>
+    ),
+    key: "medical-dashboard",
+  },
+  {
+    route: "/equipment/dashboard",
+    component: (
+      <ProtectedRoute roles={[ROLES.EQUIPMENT_MANAGER]}>
+        <EquipmentDashboard />
+      </ProtectedRoute>
+    ),
+    key: "equipment-dashboard",
+  },
+
+  // General Dashboard (shown in sidebar)
   {
     type: "collapse",
     name: "Dashboard",
@@ -39,30 +114,18 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Tables",
-  //   key: "tables",
-  //   icon: <Icon fontSize="small">table_view</Icon>,
-  //   route: "/tables",
-  //   component: <Tables />,
-  // },
+
+  // CBRN Data
   {
     type: "collapse",
-    name: "CBRN data",
+    name: "CBRN Data",
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
     component: <Billing />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "RTL",
-  //   key: "rtl",
-  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-  //   route: "/rtl",
-  //   component: <RTL />,
-  // },
+
+  // Evaluation
   {
     type: "collapse",
     name: "Evaluation",
@@ -71,30 +134,38 @@ const routes = [
     route: "/evaluation",
     component: <Evaluation questions={questions} options={options} correctAnswers={correctAnswers} />,
   },
+
+  // AI Chatbot
   {
     type: "collapse",
     name: "AI Chatbot Assistant",
     key: "chatbot",
-    icon: <Icon fontSize="small">VR training</Icon>,
+    icon: <Icon fontSize="small">smart_toy</Icon>,
     route: "/chatbot",
     component: <ChatBot />,
   },
+
+  // VR/AR Training
   {
     type: "collapse",
     name: "Start VR/AR Training",
     key: "arlearning",
-    icon: <Icon fontSize="small">VR training</Icon>,
+    icon: <Icon fontSize="small">view_in_ar</Icon>,
     route: "/arlearning",
     component: <Arlearning />,
   },
+
+  // Movement Tracking
   {
     type: "collapse",
     name: "Movement/Posture Tracking",
     key: "opencv",
-    icon: <Icon fontSize="small">Tracking</Icon>,
+    icon: <Icon fontSize="small">accessibility_new</Icon>,
     route: "/trackpos",
     component: <TrackingPosture />,
   },
+
+  // Profile
   {
     type: "collapse",
     name: "Profile",
@@ -103,27 +174,30 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Sign In",
-  //   key: "sign-in",
-  //   icon: <Icon fontSize="small">login</Icon>,
-  //   route: "/authentication/sign-in",
-  //   component: <SignIn />,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Sign Up",
-  //   key: "sign-up",
-  //   icon: <Icon fontSize="small">assignment</Icon>,
-  //   route: "/authentication/sign-up",
-  //   component: <SignUp />,
-  // },
+
+  // Authentication Routes (not shown in sidebar)
+  {
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+    key: "sign-in",
+  },
+  {
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+    key: "sign-up",
+  },
+  {
+    route: "/unauthorized",
+    component: <Unauthorized />,
+    key: "unauthorized",
+  },
+
+  // Sign Out
   {
     type: "collapse",
     name: "Sign Out",
     key: "sign-out",
-    icon: <Icon fontSize="small">assignment</Icon>,
+    icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
     component: <Signout />,
   },
